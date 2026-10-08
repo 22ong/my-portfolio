@@ -23,7 +23,7 @@ const PROJECTS: Project[] = [
     title: '청주시 가족센터 리디자인',
     summary: '청주시 가족센터 웹사이트의 문제점을 분석해 구조와 화면을 개선한 리디자인',
     category: 'redesign',
-    thumbnail: '/generated/projects/cheongju-family-center/thumbnail-960.webp',
+    thumbnail: `${import.meta.env.BASE_URL}generated/projects/cheongju-family-center/thumbnail-960.webp`,
   },
   // TODO: 실제 프로젝트 정보로 교체
   {
