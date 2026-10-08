@@ -1,0 +1,616 @@
+/* ==========================================================================
+   디자인 토큰
+   Figma에서 컬러·타이포·간격이 확정되면 이 블록의 값만 바꾼다.
+   ========================================================================== */
+:root {
+  /* 컬러: 중립 톤 + 강조색 1개 */
+  --color-bg: #fff;
+  --color-surface: #f5f5f6;
+  --color-text: #1d1d1f;
+  --color-text-muted: #5f6368;
+  --color-border: #e4e4e7;
+  --color-accent: #2450e6;
+  --color-accent-hover: #1a3fba;
+  --color-on-accent: #fff;
+
+  /* 폰트: Pretendard가 설치돼 있으면 사용, 없으면 시스템 한글 폰트 */
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system,
+    BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR',
+    system-ui, sans-serif;
+
+  /* 타이포그래피 위계 (모바일 기준, 아래에서 브레이크포인트별로 덮어씀) */
+  --font-display: 40px;
+  --font-heading: 28px;
+  --font-subheading: 18px;
+  --font-body: 16px;
+  --font-caption: 14px;
+
+  /* 간격: 8px 체계 */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-12: 96px;
+  --space-16: 128px;
+
+  /* 레이아웃 */
+  --content-max: 1120px;
+  --gutter: 20px;
+  --section-py: var(--space-8);
+  --header-height: 64px;
+  --grid-gap: var(--space-3);
+  --radius: 8px;
+}
+
+/* 태블릿 (768~1199) */
+@media (min-width: 768px) {
+  :root {
+    --font-display: 52px;
+    --font-heading: 32px;
+    --font-subheading: 20px;
+    --gutter: 32px;
+    --section-py: var(--space-12);
+    --header-height: 72px;
+  }
+}
+
+/* 데스크톱 (1200~) */
+@media (min-width: 1200px) {
+  :root {
+    --font-display: 64px;
+    --font-heading: 36px;
+    --font-body: 18px;
+    --gutter: 40px;
+    --section-py: var(--space-16);
+  }
+}
+
+/* ==========================================================================
+   기본 스타일
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+  scroll-padding-top: var(--header-height);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-body);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+  color: var(--color-text);
+  background: var(--color-bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* 모든 영역이 같은 좌우 여백을 갖도록 맞춤 (콘텐츠 최대 폭 기준 가운데 정렬) */
+.header,
+.hero,
+.projects,
+.about,
+.contact,
+.footer {
+  padding-inline: max(var(--gutter), calc((100% - var(--content-max)) / 2));
+}
+
+/* 섹션 공통 */
+.projects,
+.about,
+.contact {
+  padding-block: var(--section-py);
+  border-top: 1px solid var(--color-border);
+}
+
+.projects__title,
+.about__title,
+.contact__title {
+  font-size: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.about__subtitle {
+  font-size: var(--font-subheading);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  height: var(--header-height);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header__logo {
+  font-size: var(--font-subheading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.header__list {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.header__link {
+  display: inline-block;
+  padding-block: var(--space-1);
+  font-size: var(--font-caption);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+}
+
+.header__link:hover {
+  color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  .header__list {
+    gap: var(--space-4);
+  }
+
+  .header__link {
+    font-size: var(--font-body);
+  }
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100svh - var(--header-height));
+  padding-block: var(--space-12);
+}
+
+.hero__name {
+  margin-bottom: var(--space-3);
+  font-size: var(--font-subheading);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.hero__title {
+  max-width: 14em;
+  font-size: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  color: var(--color-text);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding-inline: var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-size: var(--font-body);
+  font-weight: 600;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.hero__cta--primary {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+}
+
+.hero__cta--primary:hover {
+  background: var(--color-accent-hover);
+}
+
+.hero__cta--secondary {
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.hero__cta--secondary:hover {
+  border-color: var(--color-text);
+}
+
+/* ==========================================================================
+   Projects
+   ========================================================================== */
+.projects__title {
+  margin-bottom: var(--space-6);
+}
+
+/* 12컬럼 그리드: 모바일 1열 / 태블릿 2열 / 데스크톱 3열 */
+.projects__list {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-6) var(--grid-gap);
+}
+
+.project-card {
+  grid-column: span 12;
+}
+
+@media (min-width: 768px) {
+  .project-card {
+    grid-column: span 6;
+  }
+}
+
+@media (min-width: 1200px) {
+  .project-card {
+    grid-column: span 4;
+  }
+}
+
+.project-card__link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.project-card__thumbnail {
+  align-self: stretch;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  transition: border-color 0.2s;
+}
+
+.project-card__thumbnail--empty {
+  height: auto;
+}
+
+.project-card__link:hover .project-card__thumbnail {
+  border-color: var(--color-text-muted);
+}
+
+.project-card__tag {
+  margin-top: var(--space-2);
+  padding: 2px var(--space-1);
+  border-radius: 4px;
+  font-size: var(--font-caption);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+}
+
+.project-card__title {
+  margin-top: var(--space-1);
+  font-size: var(--font-subheading);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  transition: color 0.2s;
+}
+
+.project-card__link:hover .project-card__title {
+  color: var(--color-accent);
+}
+
+.project-card__summary {
+  margin-top: var(--space-1);
+  font-size: var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.project-card__role {
+  margin-top: var(--space-1);
+  font-size: var(--font-caption);
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   About / Contact 공통 레이아웃
+   데스크톱: 제목(4컬럼) | 내용(8컬럼)
+   ========================================================================== */
+.about,
+.contact {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6) var(--grid-gap);
+}
+
+@media (min-width: 1200px) {
+  .about,
+  .contact {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .about__title,
+  .contact__title {
+    grid-column: 1 / span 4;
+    grid-row: 1 / span 3;
+    align-self: start;
+  }
+
+  .about__intro,
+  .about__group,
+  .contact__email,
+  .contact__list {
+    grid-column: 5 / -1;
+  }
+}
+
+/* ==========================================================================
+   About
+   ========================================================================== */
+.about__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.about__text {
+  max-width: 36em;
+  font-size: var(--font-body);
+  line-height: 1.7;
+  color: var(--color-text-muted);
+}
+
+/* 첫 문장은 한 줄 소개이므로 강조 */
+.about__text:first-child {
+  font-size: var(--font-subheading);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.about__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.about__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.about__item {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: var(--font-caption);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+/* ==========================================================================
+   Contact
+   ========================================================================== */
+.contact__email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.contact__email-link {
+  font-size: var(--font-subheading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1px;
+  overflow-wrap: anywhere;
+  transition: color 0.2s;
+}
+
+.contact__email-link:hover {
+  color: var(--color-accent);
+}
+
+.contact__copy {
+  min-height: 40px;
+  padding-inline: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: var(--font-caption);
+  font-weight: 500;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+.contact__copy:hover {
+  border-color: var(--color-text);
+}
+
+/* 화면에는 숨기고 스크린 리더에만 읽히는 복사 완료 안내 */
+.contact__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.contact__list {
+  border-top: 1px solid var(--color-border);
+}
+
+.contact__item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.contact__link {
+  display: block;
+  padding-block: var(--space-2);
+  font-size: var(--font-body);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.contact__link:hover {
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-caption);
+  color: var(--color-text-muted);
+}
+
+.footer__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+}
+
+.footer__link {
+  display: inline-block;
+  padding-block: var(--space-1);
+  transition: color 0.2s;
+}
+
+.footer__link:hover {
+  color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  .footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* ==========================================================================
+   모션: 스크롤 진입 시 가벼운 페이드 (움직임 줄이기 설정이면 적용 안 함)
+   scroll-driven animations를 지원하지 않는 브라우저에서는 그냥 보인다.
+   ========================================================================== */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @supports (animation-timeline: view()) {
+    .projects,
+    .about,
+    .contact {
+      animation: fade-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
