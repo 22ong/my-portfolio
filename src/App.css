@@ -12,6 +12,7 @@
   --color-accent: #2450e6;
   --color-accent-hover: #1a3fba;
   --color-on-accent: #fff;
+  --color-hero-sky: #d4e7ff; /* Hero 배경 그라데이션의 위쪽 색 (D37). 아래로 갈수록 --color-bg */
 
   /* 폰트: Pretendard가 설치돼 있으면 사용, 없으면 시스템 한글 폰트 */
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system,
@@ -60,7 +61,7 @@
 /* 데스크톱 (1200~) */
 @media (min-width: 1200px) {
   :root {
-    --font-display: 64px;
+    --font-display: 72px; /* D38 */
     --font-heading: 36px;
     --font-body: 18px;
     --gutter: 40px;
@@ -230,36 +231,86 @@ button {
 /* ==========================================================================
    Hero
    ========================================================================== */
+/* 3D 로고 중심 + 첫 화면 전체 (D36). 아래쪽 여백은 스크롤 화살표 자리 */
 .hero {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: calc(100svh - var(--header-height));
-  padding-block: var(--space-12);
+  padding-block: var(--space-5) var(--space-12);
+  overflow-x: clip; /* 로고 옆으로 튀어나온 장식이 가로 스크롤을 만들지 않게 */
+  text-align: center;
+  background: linear-gradient(to bottom, var(--color-hero-sky), var(--color-bg));
+  view-timeline: --hero block;
 }
 
+@media (min-width: 768px) {
+  .hero {
+    padding-block: var(--space-6) var(--space-12);
+  }
+}
+
+/* h1 = 3D 로고 "My Portfolio". 히어로의 주인공이므로 본문 최대 폭까지 크게 */
+.hero__logo {
+  width: min(100%, var(--content-max));
+  margin-inline: auto;
+}
+
+/* 로고 아래 서명: "by. 윤수연" (H12) */
 .hero__name {
-  margin-bottom: var(--space-3);
+  margin-top: var(--space-1);
   font-size: var(--font-subheading);
   font-weight: 600;
   color: var(--color-accent);
 }
 
+.hero__name-by {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+/* 제목·소개 묶음. 마우스를 올리면 '프로젝트 보기' 커서가 나타나는 영역이라 글자 폭에 딱 맞춤 */
+.hero__copy {
+  width: fit-content;
+  max-width: 100%;
+  margin: var(--space-5) auto 0;
+}
+
+/* 모바일은 375px 폭에서 36px가 되도록 줄이고, 넓어지면 --font-display까지 커짐 */
 .hero__title {
-  max-width: 14em;
-  font-size: var(--font-display);
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: clamp(36px, 9.6vw, var(--font-display));
+  font-weight: 600;
+  line-height: 1.15;
   letter-spacing: -0.03em;
   text-wrap: balance;
   color: var(--color-text);
 }
 
+.hero__title-line {
+  display: block;
+}
+
+.hero__intro {
+  max-width: 32em;
+  margin: var(--space-3) auto 0;
+  font-size: var(--font-subheading);
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-2);
-  margin-top: var(--space-6);
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .hero__actions {
+    margin-top: var(--space-6);
+  }
 }
 
 .hero__cta {
@@ -275,15 +326,6 @@ button {
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.hero__cta--primary {
-  color: var(--color-on-accent);
-  background: var(--color-accent);
-}
-
-.hero__cta--primary:hover {
-  background: var(--color-accent-hover);
-}
-
 .hero__cta--secondary {
   color: var(--color-text);
   border-color: var(--color-border);
@@ -291,6 +333,153 @@ button {
 
 .hero__cta--secondary:hover {
   border-color: var(--color-text);
+}
+
+/* 스크롤 화살표 (H6, H13). 터치 영역 44px */
+.hero__scroll {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+}
+
+.hero__scroll:hover {
+  color: var(--color-text);
+}
+
+.hero__scroll svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ==========================================================================
+   CursorArea (커스텀 커서 영역)
+   ========================================================================== */
+.cursor-area {
+  position: relative;
+}
+
+/* 마우스가 없는 기기: 커서 대신 평범한 텍스트 링크로 보여줌 */
+.cursor-area__link {
+  display: inline-block;
+  margin-top: var(--space-4);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.cursor-area__link::after {
+  content: ' →';
+}
+
+.cursor-area__cursor {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cursor-area {
+    cursor: none;
+  }
+
+  /* 영역 전체를 덮는 투명 링크: 어디를 눌러도 이동. 문구는 스크린 리더용으로만 남김 */
+  .cursor-area__link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    margin: 0;
+    overflow: hidden;
+    color: transparent;
+    text-decoration: none;
+    cursor: none;
+  }
+
+  .cursor-area__link::after {
+    content: none;
+  }
+
+  .cursor-area__link:focus-visible {
+    outline-offset: 8px;
+    border-radius: var(--radius);
+  }
+
+  /* 바깥: 마우스 위치를 따라감 (좌표는 CursorArea가 --cursor-x/y로 넣어줌) */
+  .cursor-area__cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    display: block;
+    pointer-events: none;
+    transform: translate(var(--cursor-x, 0), var(--cursor-y, 0));
+  }
+
+  /* 안쪽: 마우스 위치를 중심으로 한 동그란 라벨. 영역에 들어오면 커지며 나타남 */
+  .cursor-area__bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    font-size: var(--font-caption);
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--color-on-accent);
+    background: var(--color-accent);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+    transition: opacity 0.2s, transform 0.2s ease-out;
+  }
+
+  .cursor-area.is-active .cursor-area__bubble {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* ==========================================================================
+   PuffyText (부푼 3D 글자)
+   ========================================================================== */
+.puffy {
+  display: block;
+  perspective: 800px;
+  /* 로고 글자가 드래그로 선택·끌기 되지 않게 (스크린 리더는 aria-label로 그대로 읽음) */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.puffy__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible; /* 털 가장자리와 그림자가 viewBox 밖으로 나가도 잘리지 않게 */
+}
+
+.puffy__text {
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+/* 모바일은 장식을 별 1 + 하트 1만 (H8) */
+@media (max-width: 767px) {
+  .puffy__deco--desktop {
+    display: none;
+  }
 }
 
 /* ==========================================================================
@@ -603,6 +792,85 @@ button {
       animation-timeline: view();
       animation-range: entry 0% entry 40%;
     }
+
+    /* Hero: 스크롤해서 화면 위로 빠져나갈 때 내용이 흐려지며 올라감 (레퍼런스: 킹콩에드 스크롤 인터랙션) */
+    .hero__inner {
+      animation: hero-exit linear both;
+      animation-timeline: --hero;
+      animation-range: exit 0% exit 70%;
+    }
+  }
+
+  /* Hero: 첫 화면 진입 시 로고 → 이름 → 제목 → 소개 → 버튼 순서로 페이드 */
+  .hero__name,
+  .hero__title,
+  .hero__intro,
+  .hero__actions {
+    animation: fade-in 0.6s ease-out both;
+  }
+
+  .hero__name {
+    animation-delay: 0.1s;
+  }
+
+  .hero__title {
+    animation-delay: 0.2s;
+  }
+
+  .hero__intro {
+    animation-delay: 0.3s;
+  }
+
+  .hero__actions {
+    animation-delay: 0.4s;
+  }
+
+  /* 스크롤 화살표: 아래쪽으로 천천히 오르내림 */
+  .hero__scroll svg {
+    animation: hero-scroll-bob 2s ease-in-out infinite;
+  }
+
+  /* 3D 로고: 나타난 뒤 공중에 뜬 듯 천천히 오르내림 */
+  .hero__logo {
+    animation:
+      fade-in 0.6s ease-out both,
+      puffy-float 5s ease-in-out 0.6s infinite;
+  }
+
+  /* 마우스 위치에 따라 살짝 기울어짐 (각도는 PuffyText가 --tilt-x/y로 넣어줌) */
+  .puffy__svg {
+    transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition: transform 0.3s ease-out;
+    will-change: transform;
+  }
+}
+
+@keyframes puffy-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes hero-scroll-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes hero-exit {
+  to {
+    opacity: 0;
+    transform: translateY(-40px);
   }
 }
 
