@@ -1,27 +1,30 @@
+import { Link } from 'react-router'
+
 type NavItem = {
   label: string
-  href: string
+  hash: string // 메인 페이지의 섹션 id
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Projects', href: '#projects' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Projects', hash: '#projects' },
+  { label: 'About', hash: '#about' },
+  { label: 'Contact', hash: '#contact' },
 ]
 
+// 카테고리 페이지 등 다른 화면에서 눌러도 메인의 해당 섹션으로 이동하도록 경로('/')까지 지정
 function Header() {
   return (
     <header className="header">
-      <a href="#hero" className="header__logo" aria-label="포트폴리오 홈으로 이동">
+      <Link to="/" className="header__logo" aria-label="포트폴리오 홈으로 이동">
         Portfolio
-      </a>
+      </Link>
       <nav className="header__nav" aria-label="주요 메뉴">
         <ul className="header__list">
           {NAV_ITEMS.map((item) => (
-            <li key={item.href} className="header__item">
-              <a href={item.href} className="header__link">
+            <li key={item.hash} className="header__item">
+              <Link to={{ pathname: '/', hash: item.hash }} className="header__link">
                 {item.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

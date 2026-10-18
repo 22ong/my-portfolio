@@ -14,6 +14,20 @@
   --color-on-accent: #fff;
   --color-hero-sky: #d4e7ff; /* Hero 배경 그라데이션의 위쪽 색 (D37). 아래로 갈수록 --color-bg */
 
+  /* 카드: 반투명 유리 + 카테고리별 파스텔 빛 (레퍼런스: docs/card_rat) */
+  --color-tint-mint: #bfe8dc; /* 리디자인 */
+  --color-tint-sky: #c8ddf8; /* 프로젝트 */
+  --color-tint-peach: #f8d4cb; /* 바이브코딩 */
+  --color-ink-mint: #3f9a85; /* 아이콘의 선·배지에 쓰는 진한 색 */
+  --color-ink-sky: #4f7fc4;
+  --color-ink-peach: #d27d6c;
+  --color-glass: rgba(255, 255, 255, 0.72);
+  --color-glass-edge: rgba(208, 220, 226, 0.9);
+  --shadow-card:
+    0 1px 2px rgba(30, 50, 70, 0.04), 0 16px 40px -16px rgba(30, 60, 90, 0.22),
+    inset 0 1px 0 #fff, inset 0 0 0 4px rgba(255, 255, 255, 0.45);
+  --shadow-pill: 0 2px 8px rgba(30, 60, 90, 0.1), inset 0 1px 0 #fff;
+
   /* 폰트: Pretendard가 설치돼 있으면 사용, 없으면 시스템 한글 폰트 */
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system,
     BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR',
@@ -44,6 +58,7 @@
   --header-height: 64px;
   --grid-gap: var(--space-3);
   --radius: 8px;
+  --radius-card: 24px;
 }
 
 /* 태블릿 (768~1199) */
@@ -148,6 +163,8 @@ button {
 .projects,
 .about,
 .contact,
+.category-page,
+.not-found,
 .footer {
   padding-inline: max(var(--gutter), calc((100% - var(--content-max)) / 2));
 }
@@ -483,32 +500,440 @@ button {
 }
 
 /* ==========================================================================
-   Projects
+   Projects (와이어프레임.md 9~16절)
+   카테고리 타일 3개. 모바일 1열(가로로 긴 타일) / 태블릿~ 3열 정사각형.
+   마우스가 있는 기기에서만 호버·포커스 시 3D로 뒤집혀 뒷면 목록이 보이고 주변에 별이 나타남
    ========================================================================== */
 .projects__title {
   margin-bottom: var(--space-6);
 }
 
-/* 12컬럼 그리드: 모바일 1열 / 태블릿 2열 / 데스크톱 3열 */
-.projects__list {
+.projects__tiles {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--space-6) var(--grid-gap);
-}
-
-.project-card {
-  grid-column: span 12;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2);
 }
 
 @media (min-width: 768px) {
-  .project-card {
-    grid-column: span 6;
+  .projects__tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--grid-gap);
+  }
+}
+
+.category-tile {
+  --tile-tint: var(--color-tint-mint);
+  --tile-ink: var(--color-ink-mint);
+  position: relative;
+  perspective: 1200px;
+  border-radius: var(--radius-card);
+}
+
+/* 카테고리마다 카드 안에 번지는 파스텔 색과 아이콘 색 */
+.category-tile--project {
+  --tile-tint: var(--color-tint-sky);
+  --tile-ink: var(--color-ink-sky);
+}
+
+.category-tile--vibe-coding {
+  --tile-tint: var(--color-tint-peach);
+  --tile-ink: var(--color-ink-peach);
+}
+
+/* 앞면 왼쪽 위의 하얀 클레이 버튼 (레퍼런스: docs/card_rat) */
+.category-tile__icon {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  background: linear-gradient(160deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+  box-shadow:
+    0 10px 24px -10px rgba(30, 60, 90, 0.3),
+    inset 0 1px 0 #fff,
+    inset 0 -2px 4px rgba(30, 60, 90, 0.06);
+}
+
+.category-tile__icon .category-icon {
+  width: 44px;
+  height: 44px;
+}
+
+@media (min-width: 768px) {
+  .category-tile__icon {
+    top: var(--space-4);
+    left: var(--space-4);
+    width: 88px;
+    height: 88px;
+    border-radius: 26px;
+  }
+
+  .category-tile__icon .category-icon {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* 아이콘 칠하기: 선·배지는 진한 색(--tile-ink), 면은 흰색·파스텔(--tile-tint) */
+.category-icon {
+  overflow: visible;
+}
+
+.category-icon__paper,
+.category-icon__tint,
+.category-icon__fill,
+.category-icon__fill-soft,
+.category-icon__line {
+  stroke: var(--tile-ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.category-icon__paper {
+  fill: #fff;
+}
+
+.category-icon__tint {
+  fill: var(--tile-tint);
+}
+
+.category-icon__fill {
+  fill: var(--tile-tint);
+  stroke-width: 0;
+}
+
+.category-icon__fill-soft {
+  fill: color-mix(in srgb, var(--tile-tint) 45%, #fff);
+}
+
+.category-icon__line {
+  fill: none;
+}
+
+.category-icon__dot,
+.category-icon__badge {
+  fill: var(--tile-ink);
+}
+
+.category-icon__badge {
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.category-icon__mark {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.category-icon__mark--solid {
+  fill: #fff;
+  stroke: none;
+}
+
+/* 앞면 링크에 포커스가 가면 카드가 뒤집혀 링크가 안 보이므로, 포커스 링은 회전하지 않는 타일에 그림 */
+.category-tile:has(.category-tile__link:focus-visible) {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.category-tile__link:focus-visible {
+  outline: none;
+}
+
+.category-tile__card {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@media (min-width: 768px) {
+  .category-tile__card {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+.category-tile__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  overflow: hidden;
+  border: 1px solid var(--color-glass-edge);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+@media (min-width: 768px) {
+  .category-tile__face {
+    padding: var(--space-4);
+  }
+}
+
+/* 두 면을 1px씩 바깥으로 띄워 보이는 면이 항상 앞에 놓이게 함 (클릭이 가려지지 않게) */
+.category-tile__face--front {
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-2);
+  /* 오른쪽 아래에서 파스텔 빛이 번지고, 왼쪽 위는 유리에 빛이 맺힌 듯 밝게 */
+  background:
+    radial-gradient(110% 90% at 90% 100%, var(--tile-tint) 0%, transparent 65%),
+    radial-gradient(70% 60% at 0% 0%, rgba(255, 255, 255, 0.95) 0%, transparent 70%),
+    linear-gradient(160deg, #fbfcfc 0%, #f1f5f6 100%);
+  transform: translateZ(1px);
+}
+
+.category-tile__name {
+  font-size: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* 클릭 영역을 앞면 전체로 넓힘 */
+.category-tile__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* 개수는 유리 위에 떠 있는 하얀 알약 모양 (레퍼런스의 Tab·Switch 버튼) */
+.category-tile__count {
+  flex-shrink: 0;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  background: var(--color-glass);
+  box-shadow: var(--shadow-pill);
+  font-size: var(--font-caption);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+/* 호버가 없는 기기에서는 뒷면과 별을 쓰지 않음 (13절) */
+.category-tile__face--back,
+.category-tile__stars {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .category-tile:hover .category-tile__card,
+  .category-tile:focus-within .category-tile__card {
+    transform: rotateY(180deg);
+  }
+
+  /* 뒷면은 빛이 왼쪽 위로 옮겨 가고 전체가 더 밝음 */
+  .category-tile__face--back {
+    display: flex;
+    background:
+      radial-gradient(90% 70% at 0% 0%, var(--tile-tint) 0%, transparent 60%),
+      linear-gradient(160deg, #fdfefe 0%, #f4f7f8 100%);
+    transform: rotateY(180deg) translateZ(1px);
+  }
+
+  .category-tile__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    font-size: var(--font-subheading);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .category-tile__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  /* 프로젝트 제목은 하얀 알약 모양으로, '전체 보기'의 넓힌 클릭 영역 위에 올림 */
+  .category-tile__project {
+    position: relative;
+    z-index: 1;
+    display: block;
+    overflow: hidden;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 999px;
+    background: var(--color-glass);
+    box-shadow: var(--shadow-pill);
+    font-size: var(--font-body);
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--color-text);
+    transition:
+      background-color 0.2s,
+      transform 0.2s;
+  }
+
+  .category-tile__project:hover {
+    background: #fff;
+    transform: translateY(-1px);
+  }
+
+  .category-tile__more,
+  .category-tile__empty {
+    margin-top: var(--space-1);
+    font-size: var(--font-body);
+    color: var(--color-text-muted);
+  }
+
+  /* 뒷면의 빈 곳을 눌러도 카테고리 화면으로 이동 (P5) */
+  .category-tile__all {
+    align-self: flex-end;
+    margin-top: auto;
+    font-size: var(--font-caption);
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+
+  .category-tile__all::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  /* 타일 모서리 주변에 별 3개가 차례로 반짝 나타남 (P10, P11) */
+  .category-tile__stars {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* 별 색은 카드 색을 따라감 (리디자인 민트 · 프로젝트 하늘 · 바이브코딩 피치) */
+  .category-tile__star {
+    position: absolute;
+    fill: var(--tile-ink);
+    opacity: 0;
+    transform: scale(0) rotate(-45deg);
+    transition:
+      opacity 0.15s,
+      transform 0.15s ease-in;
+  }
+
+  .category-tile__star--1 {
+    top: -14px;
+    left: -14px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .category-tile__star--2 {
+    top: -10px;
+    right: -10px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .category-tile__star--3 {
+    right: -16px;
+    bottom: 12px;
+    width: 12px;
+    height: 12px;
+  }
+
+  .category-tile:hover .category-tile__star,
+  .category-tile:focus-within .category-tile__star {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.2s,
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .category-tile:hover .category-tile__star--2,
+  .category-tile:focus-within .category-tile__star--2 {
+    transition-delay: 0.05s;
+  }
+
+  .category-tile:hover .category-tile__star--3,
+  .category-tile:focus-within .category-tile__star--3 {
+    transition-delay: 0.1s;
+  }
+}
+
+/* ==========================================================================
+   카테고리 페이지 (/category/:category, 와이어프레임.md 14절)
+   카드 그리드: 모바일 1열 / 태블릿 2열 / 데스크톱 3열, 썸네일 4:3 (D26)
+   ========================================================================== */
+.category-page {
+  padding-block: var(--space-8) var(--section-py);
+}
+
+.category-page__back {
+  font-size: var(--font-caption);
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.category-page__back:hover {
+  color: var(--color-text);
+}
+
+.category-page__title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-block: var(--space-3) var(--space-6);
+  font-size: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.category-page__count {
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  background: var(--color-glass);
+  box-shadow: var(--shadow-pill);
+  font-size: var(--font-caption);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.category-page__empty {
+  font-size: var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.category-page__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6) var(--grid-gap);
+}
+
+@media (min-width: 768px) {
+  .category-page__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1200px) {
-  .project-card {
-    grid-column: span 4;
+  .category-page__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -516,63 +941,114 @@ button {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: var(--space-1);
   height: 100%;
 }
 
-.project-card__thumbnail {
+/* 썸네일을 유리 액자에 끼운 모양: 바깥 유리 테두리(8px) 안에 썸네일 (레퍼런스: docs/card_rat) */
+.category-page {
+  --tile-tint: var(--color-tint-mint);
+}
+
+.category-page--project {
+  --tile-tint: var(--color-tint-sky);
+}
+
+.category-page--vibe-coding {
+  --tile-tint: var(--color-tint-peach);
+}
+
+.project-card__media {
+  display: block;
   align-self: stretch;
+  margin-bottom: var(--space-1);
+  padding: var(--space-1);
+  border: 1px solid var(--color-glass-edge);
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(110% 90% at 90% 100%, var(--tile-tint) 0%, transparent 65%),
+    linear-gradient(160deg, #fbfcfc 0%, #f1f5f6 100%);
+  box-shadow: var(--shadow-card);
+}
+
+.project-card__frame {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: calc(var(--radius-card) - var(--space-1));
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.project-card__thumbnail {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  height: 100%;
   object-fit: cover;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  transition: border-color 0.2s;
-}
-
-.project-card__thumbnail--empty {
-  height: auto;
-}
-
-.project-card__link:hover .project-card__thumbnail {
-  border-color: var(--color-text-muted);
-}
-
-.project-card__tag {
-  margin-top: var(--space-2);
-  padding: 2px var(--space-1);
-  border-radius: 4px;
-  font-size: var(--font-caption);
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--color-text-muted);
-  background: var(--color-surface);
+  transition: transform 0.3s ease-out;
 }
 
 .project-card__title {
-  margin-top: var(--space-1);
   font-size: var(--font-subheading);
   font-weight: 600;
   line-height: 1.4;
   letter-spacing: -0.02em;
   color: var(--color-text);
-  transition: color 0.2s;
-}
-
-.project-card__link:hover .project-card__title {
-  color: var(--color-accent);
+  text-underline-offset: 4px;
 }
 
 .project-card__summary {
-  margin-top: var(--space-1);
   font-size: var(--font-body);
   color: var(--color-text-muted);
 }
 
 .project-card__role {
-  margin-top: var(--space-1);
   font-size: var(--font-caption);
   color: var(--color-text-muted);
+}
+
+/* 호버·포커스 시 썸네일 살짝 확대 + 제목 밑줄 (D32) */
+.project-card__link:hover .project-card__thumbnail,
+.project-card__link:focus-visible .project-card__thumbnail {
+  transform: scale(1.03);
+}
+
+.project-card__link:hover .project-card__title,
+.project-card__link:focus-visible .project-card__title {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   404
+   ========================================================================== */
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-height: calc(100svh - var(--header-height) * 2);
+  padding-block: var(--section-py);
+}
+
+.not-found__title {
+  font-size: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.not-found__text {
+  font-size: var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.not-found__link {
+  margin-top: var(--space-2);
+  font-weight: 500;
+  color: var(--color-accent);
+}
+
+.not-found__link:hover {
+  text-decoration: underline;
 }
 
 /* ==========================================================================

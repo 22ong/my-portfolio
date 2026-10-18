@@ -9,6 +9,7 @@
     "dev": "vite",
     "prebuild": "npm run images",
     "build": "tsc -b && vite build",
+    "postbuild": "node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
     "lint": "oxlint",
     "preview": "vite preview",
     "predeploy": "npm run build",
@@ -16,7 +17,8 @@
   },
   "dependencies": {
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router": "^8.4.0"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

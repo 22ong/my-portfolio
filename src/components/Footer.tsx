@@ -1,3 +1,5 @@
+import { Link } from 'react-router'
+
 type FooterLink = {
   label: string
   url: string
@@ -16,9 +18,9 @@ function Footer({ email, links }: FooterProps) {
       <nav className="footer__nav" aria-label="푸터 메뉴">
         <ul className="footer__list">
           <li className="footer__item">
-            <a href="#contact" className="footer__link">
+            <Link to={{ pathname: '/', hash: '#contact' }} className="footer__link">
               Contact
-            </a>
+            </Link>
           </li>
           {email && (
             <li className="footer__item">
